@@ -11,6 +11,7 @@ python_version = '3'
 [packages]
 flask = "*"
 flask-restful = "*"
+uwsgi = "*"
 
 [scripts]
 
