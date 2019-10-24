@@ -1,3 +1,3 @@
-Einstein Scrum
+einstein-scrum-api
 ---
-An app that uses Einstein to automate common scrum tasks.
+Rest API that will handle GUS actions for Einstein Scrum.
