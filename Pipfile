@@ -12,6 +12,7 @@ python_version = '3'
 flask = "*"
 flask-restful = "*"
 uwsgi = "*"
+beatbox = "*"
 
 [scripts]
 
