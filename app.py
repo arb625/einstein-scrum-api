@@ -47,7 +47,9 @@ class UpdateGus(Resource):
                 work_id = json["queryResult"]["parameters"]["WorkId"]
                 new_status = json["queryResult"]["parameters"]["Status"]
                 update_status(connection, work_id, new_status)
+            return {"fulfillmentText": "This is a text response"}, 200
         except:
+            return {"fulfillmentText": "Something went wrong"}, 400
             pass
 
 
