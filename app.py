@@ -16,8 +16,8 @@ GUS_FIELD_STATUS = "Status__c"
 
 sf = beatbox._tPartnerNS
 svc = beatbox.Client()
-username = os.environ.get("USERNAME")
-password = os.environ.get("PASSWORD")
+username = str(os.environ.get("USERNAME"))
+password = str(os.environ.get("PASSWORD"))
 svc.login(username, password)
 
 
