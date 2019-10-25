@@ -13,6 +13,8 @@ flask = "*"
 flask-restful = "*"
 uwsgi = "*"
 simple-salesforce = "*"
+redis = "*"
+rq = "*"
 
 [scripts]
 
