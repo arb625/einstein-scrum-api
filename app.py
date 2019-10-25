@@ -19,10 +19,11 @@ sf = beatbox._tPartnerNS
 svc = beatbox.Client()
 username = str(os.environ.get("USERNAME"))
 password = str(os.environ.get("PASSWORD"))
+svc.serverUrl = "https://gus.my.salesforce.com/services/Soap/u/${force-wsc.major-version}"
+svc.login(username, password)
 
 
 def update_status(work_id, new_status):
-    svc.login(username, password)
     id = svc.query(f"""
         SELECT Id
         FROM {GUS_ENTITY_WORK_ITEM}
