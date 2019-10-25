@@ -14,11 +14,14 @@ GUS_ENTITY_WORK_ITEM = "ADM_Work__c"
 GUD_FIELD_WORK_ID_AND_SUBJECT = "WorkId_and_Subject__c"
 GUS_FIELD_STATUS = "Status__c"
 
-sf = beatbox._tPartnerNS
-svc = beatbox.Client()
-username = str(os.environ.get("USERNAME"))
-password = str(os.environ.get("PASSWORD"))
-svc.login(username, password)
+try:
+    sf = beatbox._tPartnerNS
+    svc = beatbox.Client()
+    username = str(os.environ.get("USERNAME"))
+    password = str(os.environ.get("PASSWORD"))
+    svc.login(username, password)
+except:
+    pass
 
 
 def update_status(work_id, new_status):
