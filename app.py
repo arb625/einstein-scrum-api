@@ -42,7 +42,10 @@ class UpdateGus(Resource):
         return {"about": "Welcome to Einstein Scrum Rest API!"}
 
     def post(self):
-        json = request.get_json()
+        try:
+            json = request.get_json()
+        except:
+            return {"fulfillmentText": "Something went wrong with the json parsing."}, 401
         try:
             if json["queryResult"]["intent"]["displayName"] == CHANGE_STATUS_INTENT:
                 work_id = json["queryResult"]["parameters"]["WorkId"]
@@ -51,9 +54,9 @@ class UpdateGus(Resource):
                 if str(sr[sf.success]) == 'true':
                     return {"fulfillmentText": "Changed status successfully"}
                 else:
-                    return {"fulfillmentText": str(sr[sf.errors][sf.statusCode]) + ":" + str(sr[sf.errors][sf.message])}, 400
+                    return {"fulfillmentText": str(sr[sf.errors][sf.statusCode]) + ":" + str(sr[sf.errors][sf.message])}, 402
         except:
-            return {"fulfillmentText": "Something went wrong with the json parsing."}, 400
+            return {"fulfillmentText": "Request was not the right format"}, 403
 
 
 api.add_resource(UpdateGus, "/")
