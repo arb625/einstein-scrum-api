@@ -12,8 +12,6 @@ api = Api(app)
 q = Queue(connection=conn)
 
 CHANGE_STATUS_INTENT = "Change status"
-SET_POINTS_INTENT = ""
-REMOVE_FROM_SPRINT_INTENT = ""
 
 
 class UpdateGus(Resource):
