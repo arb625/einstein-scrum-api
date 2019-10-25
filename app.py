@@ -1,7 +1,9 @@
 from flask import Flask, request
 from flask_restful import Resource, Api
-from simple_salesforce import Salesforce, SalesforceLogin
+from simple_salesforce import Salesforce
+
 import os
+from threading import Thread
 
 app = Flask(__name__)
 api = Api(app)
@@ -44,11 +46,13 @@ class UpdateGus(Resource):
             if json["queryResult"]["intent"]["displayName"] == CHANGE_STATUS_INTENT:
                 work_id = json["queryResult"]["parameters"]["WorkId"]
                 new_status = json["queryResult"]["parameters"]["Status"]
-                ret = update_status(work_id, new_status)
-                if ret == 200 or ret == 204:
-                    return {"fulfillmentText": "Changed status successfully"}
-                else:
-                    return {"fulfillmentText": "Could not update status."}, 402
+                thread = Thread(target=update_status, kwargs={"work_id": work_id, "new_status": new_status})
+                thread.start()
+                # ret = update_status(work_id, new_status)
+                # if ret == 200 or ret == 204:
+                return {"fulfillmentText": "Changed status successfully"}
+                # else:
+                #     return {"fulfillmentText": "Could not update status."}, 402
         except:
             return {"fulfillmentText": "Request was not the right format"}, 403
 
