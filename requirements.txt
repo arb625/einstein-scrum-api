@@ -1,4 +1,4 @@
 Flask
 Flask-RESTful
 uwsgi
--e git+https://github.com/superfell/Beatbox@master#egg=beatbox
+simple-salesforce

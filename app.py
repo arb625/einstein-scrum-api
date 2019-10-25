@@ -1,6 +1,6 @@
 from flask import Flask, request
 from flask_restful import Resource, Api
-import beatbox
+from simple_salesforce import Salesforce, SalesforceLogin
 import os
 
 app = Flask(__name__)
@@ -14,28 +14,21 @@ GUS_ENTITY_WORK_ITEM = "ADM_Work__c"
 GUD_FIELD_WORK_ID_AND_SUBJECT = "WorkId_and_Subject__c"
 GUS_FIELD_STATUS = "Status__c"
 
+GUS_ORG_ID = "00DT0000000DpvcMAC"
 
-sf = beatbox._tPartnerNS
-svc = beatbox.Client()
 username = str(os.environ.get("USERNAME"))
 password = str(os.environ.get("PASSWORD"))
-svc.serverUrl = "https://gus.my.salesforce.com/services/Soap/u/${force-wsc.major-version}"
-svc.login(username, password)
+sf = Salesforce(organizationId=GUS_ORG_ID, username=username, password=password)
 
 
 def update_status(work_id, new_status):
-    id = svc.query(f"""
+    entity_id = sf.query(f"""
         SELECT Id
         FROM {GUS_ENTITY_WORK_ITEM}
         WHERE {GUD_FIELD_WORK_ID_AND_SUBJECT} LIKE '%{work_id}%'
-    """)[sf.records:][0][1][0]
-    s = {
-        "type": GUS_ENTITY_WORK_ITEM,
-        "Id": id,
-        GUS_FIELD_STATUS: new_status
-    }
-    sr = svc.update(s)
-    return sr
+    """)["records"][0]["Id"]
+    ret = sf.ADM_Work__c.update(entity_id, {GUS_FIELD_STATUS: new_status})
+    return ret
 
 
 class UpdateGus(Resource):
@@ -51,11 +44,11 @@ class UpdateGus(Resource):
             if json["queryResult"]["intent"]["displayName"] == CHANGE_STATUS_INTENT:
                 work_id = json["queryResult"]["parameters"]["WorkId"]
                 new_status = json["queryResult"]["parameters"]["Status"]
-                sr = update_status(work_id, new_status)
-                if str(sr[sf.success]) == 'true':
+                ret = update_status(work_id, new_status)
+                if ret == 200 or ret == 204:
                     return {"fulfillmentText": "Changed status successfully"}
                 else:
-                    return {"fulfillmentText": str(sr[sf.errors][sf.statusCode]) + ":" + str(sr[sf.errors][sf.message])}, 402
+                    return {"fulfillmentText": "Could not update status."}, 402
         except:
             return {"fulfillmentText": "Request was not the right format"}, 403
 

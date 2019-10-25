@@ -12,7 +12,7 @@ python_version = '3'
 flask = "*"
 flask-restful = "*"
 uwsgi = "*"
-beatbox = {editable = true,git = "https://github.com/superfell/Beatbox",ref = "master"}
+simple-salesforce = "*"
 
 [scripts]
 
