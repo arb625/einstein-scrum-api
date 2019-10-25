@@ -19,6 +19,8 @@ sf = beatbox._tPartnerNS
 svc = beatbox.Client()
 username = str(os.environ.get("USERNAME"))
 password = str(os.environ.get("PASSWORD"))
+print(username)
+print(password)
 try:
     svc.login(username, password)
 except:
