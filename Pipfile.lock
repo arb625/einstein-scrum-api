@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "e7db8bf686b431c3bd6704b4ffbe3b562d7a516f7542d0d9751b32e825f2e5fd"
+            "sha256": "863be4e6ca2c5138af0d0bdde84936b893a5b5bacbde44cee8f03ab2e6dbed6c"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -23,12 +23,10 @@
             ],
             "version": "==8.0.0"
         },
-        "beatbox3": {
-            "hashes": [
-                "sha256:53f41eb11fc40b0a08fba01ce9fdd9c7a30439917d1368f2ef431939f287c188"
-            ],
-            "index": "pypi",
-            "version": "==0.96.1"
+        "beatbox": {
+            "editable": true,
+            "git": "https://github.com/superfell/Beatbox",
+            "ref": "14f35e83d2bca254406f003a5a8559d6cc42f56b"
         },
         "click": {
             "hashes": [

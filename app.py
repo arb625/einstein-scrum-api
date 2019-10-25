@@ -17,7 +17,7 @@ GUS_FIELD_STATUS = "Status__c"
 
 def get_connection(username, password):
     if not get_connection.connection:
-        get_connection.connection = beatbox.PythonClient()
+        get_connection.connection = beatbox.Client()
         get_connection.connection.login(username, password)
     return get_connection.connection
 
@@ -42,10 +42,13 @@ class UpdateGus(Resource):
         username = os.environ.get("USERNAME")
         password = os.environ.get("PASSWORD")
         connection = get_connection(username, password)
-        if json["queryResult"]["intent"]["displayName"] == CHANGE_STATUS_INTENT:
-            work_id = json["queryResult"]["parameters"]["WorkId"]
-            new_status = json["queryResult"]["parameters"]["Status"]
-            update_status(connection, work_id, new_status)
+        try:
+            if json["queryResult"]["intent"]["displayName"] == CHANGE_STATUS_INTENT:
+                work_id = json["queryResult"]["parameters"]["WorkId"]
+                new_status = json["queryResult"]["parameters"]["Status"]
+                update_status(connection, work_id, new_status)
+        except:
+            pass
 
 
 api.add_resource(UpdateGus, "/")
