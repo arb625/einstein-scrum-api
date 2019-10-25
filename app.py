@@ -14,23 +14,26 @@ GUS_ENTITY_WORK_ITEM = "ADM_Work__c"
 GUD_FIELD_WORK_ID_AND_SUBJECT = "WorkId_and_Subject__c"
 GUS_FIELD_STATUS = "Status__c"
 
-
-def get_connection(username, password):
-    if not get_connection.connection:
-        get_connection.connection = beatbox.Client()
-        get_connection.connection.login(username, password)
-    return get_connection.connection
-
-
-get_connection.connection = None
+sf = beatbox._tPartnerNS
+svc = beatbox.Client()
+username = os.environ.get("USERNAME")
+password = os.environ.get("PASSWORD")
+svc.login(username, password)
 
 
-def update_status(connection, work_id, new_status):
-    connection.query(f"""
-        UPDATE {GUS_ENTITY_WORK_ITEM}
-        SET {GUS_FIELD_STATUS} = {new_status}
-        WHERE {work_id} IN {GUD_FIELD_WORK_ID_AND_SUBJECT}
-    """)
+def update_status(work_id, new_status):
+    id = svc.query(f"""
+        SELECT Id
+        FROM {GUS_ENTITY_WORK_ITEM}
+        WHERE {GUD_FIELD_WORK_ID_AND_SUBJECT} LIKE '%{work_id}%'
+    """)[sf.records:][0][1][0]
+    s = {
+        "type": GUS_ENTITY_WORK_ITEM,
+        "Id": id,
+        GUS_FIELD_STATUS: new_status
+    }
+    sr = svc.update(s)
+    return sr
 
 
 class UpdateGus(Resource):
@@ -39,18 +42,17 @@ class UpdateGus(Resource):
 
     def post(self):
         json = request.get_json()
-        username = os.environ.get("USERNAME")
-        password = os.environ.get("PASSWORD")
-        connection = get_connection(username, password)
         try:
             if json["queryResult"]["intent"]["displayName"] == CHANGE_STATUS_INTENT:
                 work_id = json["queryResult"]["parameters"]["WorkId"]
                 new_status = json["queryResult"]["parameters"]["Status"]
-                update_status(connection, work_id, new_status)
-            return {"fulfillmentText": "This is a text response"}, 200
+                sr = update_status(work_id, new_status)
+                if str(sr[sf.success]) == 'true':
+                    return {"fulfillmentText": "Changed status successfully"}
+                else:
+                    return {"fulfillmentText": str(sr[sf.errors][sf.statusCode]) + ":" + str(sr[sf.errors][sf.message])}, 400
         except:
-            return {"fulfillmentText": "Something went wrong"}, 400
-            pass
+            return {"fulfillmentText": "Something went wrong with the json parsing."}, 400
 
 
 api.add_resource(UpdateGus, "/")
