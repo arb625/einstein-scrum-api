@@ -21,10 +21,7 @@ username = str(os.environ.get("USERNAME"))
 password = str(os.environ.get("PASSWORD"))
 print(username)
 print(password)
-try:
-    svc.login(username, password)
-except:
-    pass
+svc.login(username, password)
 
 
 def update_status(work_id, new_status):
